@@ -64,8 +64,7 @@ function draw() {
     translate(0, 0);
     scale(1); // Makes the orb slightly smaller
     let size = min(width, height);
- rect(-1, -1, 2, 2);  // Full viewport quad in WEBGL space
-
+    rect(-width/2, -height/2, width, height);  // Proper centered drawing
     pop();
     updateCaptions();
 }
