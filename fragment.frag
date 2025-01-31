@@ -47,8 +47,10 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
- float border = smoothstep(0.95, 1.0, abs(uv.x)) + smoothstep(0.95, 1.0, abs(uv.y));
-    finalColor = mix(finalColor, vec3(1.0,0.0,0.0), border);
+   float cross = smoothstep(0.01, 0.0, length(uv)) + 
+                 smoothstep(0.01, 0.0, abs(uv.x)) + 
+                 smoothstep(0.01, 0.0, abs(uv.y));
+    finalColor = mix(finalColor, vec3(1,0,0), cross);
     
     gl_FragColor = vec4(finalColor, blob);
 }
