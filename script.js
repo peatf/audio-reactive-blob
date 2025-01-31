@@ -53,19 +53,14 @@ function draw() {
     trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
 
     shader(theShader);
+      theShader.setUniform("u_resolution", [width, height]);
     theShader.setUniform("u_time", millis() / 1000.0);
-    theShader.setUniform("u_resolution", [width, height]);
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
 
       // FIXED: Simplified drawing logic
-    push();
-    resetMatrix();
-    scale(1, -1); // Flip Y-axis to match WebGL's coordinate system
-    rect(-1, -1, 2, 2); // Full-screen quad
-    pop();
-
+       rect(0, 0, width, height); // Use screen coordinates
     updateCaptions();
 }
 
