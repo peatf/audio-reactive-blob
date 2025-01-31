@@ -9,15 +9,21 @@ let currentCaption = "";
 let captionElement;
 
 function preload() {
-    theShader = new p5.Shader(this.renderer, vertShader, fragShader);
+    // Load shaders as text files
+    loadStrings("vertex.vert", (data) => {
+        vertexShaderSource = data.join("\n");
+    });
+    loadStrings("fragment.frag", (data) => {
+        fragmentShaderSource = data.join("\n");
+    });
 
-    // Load your audio file
+    // Load audio
     audio = loadSound('rtkgreenwelcome.mp3', 
         () => console.log("Audio loaded successfully"), 
         () => console.error("Failed to load audio. Make sure 'rtkgreenwelcome.mp3' exists.")
     );
 
-    // Load captions
+    // Load captions file
     loadCaptions('rtkgreenwelcome.vtt');
 }
 
@@ -36,6 +42,9 @@ function setup() {
     if (!audio) {
         console.error("Audio file not found. Check your GitHub repository.");
     }
+
+    // Create shader once text files are loaded
+    theShader = new p5.Shader(this._renderer, vertexShaderSource, fragmentShaderSource);
 }
 
 function draw() {
