@@ -1,21 +1,19 @@
+let vertexShaderSource, fragmentShaderSource;
 let theShader;
 let shaderCanvas;
 let audio, fft, amplitude;
 let audioLevel = 0;
-let bassLevel = 0;
-let trebleLevel = 0;
 let captions = [];
 let currentCaption = "";
 let captionElement;
 
 function preload() {
-    theShader = new p5.Shader(this.renderer, vertShader, fragShader);
+    // Load shaders as text files
+    loadStrings("vertex.vert", (data) => { vertexShaderSource = data.join("\n"); });
+    loadStrings("fragment.frag", (data) => { fragmentShaderSource = data.join("\n"); });
 
-    // Load your audio file
-audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN_Cp_cxmBgwAU3a_YBb');
-        () => console.log("Audio loaded successfully"), 
-        () => console.error("Failed to load audio. Make sure 'rtkgreenwelcome.mp3' exists.")
-    );
+    // Load audio from Dropbox or Cloudinary
+audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
 
     // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
@@ -24,23 +22,26 @@ audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN
 function setup() {
     createCanvas(600, 600, WEBGL);
     noStroke();
-    
+
     shaderCanvas = createGraphics(width, height, WEBGL);
     shaderCanvas.noStroke();
-    
+
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
     captionElement = document.getElementById("caption");
 
-    if (!audio) {
-        console.error("Audio file not found. Check your GitHub repository.");
+    // Wait for shaders before creating them
+    if (vertexShaderSource && fragmentShaderSource) {
+        theShader = new p5.Shader(this._renderer, vertexShaderSource, fragmentShaderSource);
+    } else {
+        console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
     }
 }
 
 function draw() {
     if (!theShader) {
-        console.error("Shader failed to load. Check if 'vertex.vert' and 'fragment.frag' exist.");
+        console.error("Shader failed to load. Check 'vertex.vert' and 'fragment.frag'.");
         return;
     }
 
@@ -48,8 +49,8 @@ function draw() {
     audioLevel = lerp(audioLevel, level, 0.2);
 
     let spectrum = fft.analyze();
-    bassLevel = lerp(bassLevel, fft.getEnergy("bass") / 255, 0.2);
-    trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
+    let bassLevel = lerp(fft.getEnergy("bass") / 255, 0.2);
+    let trebleLevel = lerp(fft.getEnergy("treble") / 255, 0.2);
 
     shaderCanvas.shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
