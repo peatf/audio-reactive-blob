@@ -19,6 +19,7 @@ function preload() {
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
+     pixelDensity(1); 
     noStroke();
  console.log('vertexShaderSource:', vertexShaderSource);
     console.log('fragmentShaderSource:', fragmentShaderSource);
@@ -63,7 +64,8 @@ function draw() {
    push();
         resetMatrix();  // Clear previous transformations
     translate(0, 0);
-    let size = min(width, height);
+        scale(1.0); // Explicitly set to no scaling
+ let size = min(width, height);
  rect(-1, -1, 2, 2);  // Covers entire WEBGL space (-1 to 1 in both axes)
     pop();
     updateCaptions();
