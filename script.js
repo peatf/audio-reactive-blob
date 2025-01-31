@@ -15,7 +15,7 @@ function preload() {
     audio = loadSound('rtkgreenwelcome.mp3');
 
     // Load captions file
-    loadCaptions('captions.vtt');
+    loadCaptions('rtkgreenwelcome.vtt');
 }
 
 function setup() {
