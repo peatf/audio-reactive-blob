@@ -41,5 +41,5 @@ void main() {
     float blob = jellyBlob(uv, 0.4, 0.1);
     vec3 finalColor = mix(vec3(0.0), vec3(0.1, 0.8, 0.3), blob);
     
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Full red screen test
+    gl_FragColor = vec4(finalColor, blob);
 }
