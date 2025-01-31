@@ -63,7 +63,7 @@ function draw() {
 
 
       // FIXED: Simplified drawing logic
-       rect(0, 0, width, height); // Use screen coordinates
+rect(-width / 2, -height / 2, width, height);
     updateCaptions();
 }
 
