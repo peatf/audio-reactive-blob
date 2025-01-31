@@ -48,12 +48,12 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 
 void main() {
     // PROPER UV CALCULATION
-    vec2 uv = vTexCoord * 2.0 - 1.0; // Full-screen [-1,1] range
-    uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio fix
+    vec2 uv = vTexCoord; // Already in [-1, 1] range
+ uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio fix
 
     // DEBUG: Force full-screen test (temporary)
-  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Should fill entire screen red
- return;
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
 
     // RESTORE ORB LOGIC
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
