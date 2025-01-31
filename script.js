@@ -6,8 +6,7 @@ let trebleLevel = 0;
 let captions = [];
 let currentCaption = "";
 let captionElement;
-let vertexShaderSource;
-let fragmentShaderSource;
+let textureImg;
 
 function preload() {
     vertexShaderSource = loadStrings('vertex.vert');
@@ -15,30 +14,22 @@ function preload() {
     audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
     loadCaptions('rtkgreenwelcome.vtt');
     textureImg = loadImage('A seamless, grainy pencil texture 1.png');
-
 }
 
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
     noStroke();
- console.log('vertexShaderSource:', vertexShaderSource);
-    console.log('fragmentShaderSource:', fragmentShaderSource);
+    
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
     captionElement = document.getElementById("caption");
 
-    // Create shader once sources are loaded
     Promise.all([vertexShaderSource, fragmentShaderSource]).then(([vertData, fragData]) => {
-        try {
-            theShader = createShader(vertData.join('\n'), fragData.join('\n'));
-            console.log('Shader created successfully');
-        } catch(err) {
-            console.error("Shader creation error:", err);
-        }
-    }).catch((err) => {
-        console.error("Shader loading error:", err);
+        theShader = createShader(vertData.join('\n'), fragData.join('\n'));
+    }).catch(() => {
+        console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
     });
 }
 
@@ -61,24 +52,23 @@ function draw() {
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
 
-    // Center the orb
-   push();
-    translate(0, 0);
-    scale(0.8); // Makes the orb slightly smaller
-    let size = min(width, height);
+    // Draw centered orb
+    push();
+    let size = min(width, height) * 0.35; // Slightly smaller size
     rect(-size/2, -size/2, size, size);
     pop();
 
-        // Then overlay texture
-
+    // Draw texture overlay
     push();
-    resetShader(); // Important! Reset shader before drawing texture
-    textureMode(NORMAL);
+    resetShader();
+    imageMode(CENTER);
     blendMode(MULTIPLY);
-    translate(-width/2, -height/2); // Position for WEBGL mode
-    image(textureImg, 0, 0, width, height);
+    if (textureImg) {
+        image(textureImg, 0, 0, width, height);
+    }
     blendMode(BLEND);
     pop();
+
     updateCaptions();
 }
 
