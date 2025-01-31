@@ -64,7 +64,7 @@ function draw() {
 
 
       // FIXED: Simplified drawing logic
-rect(-width / 2, -height / 2, width, height);
+rect(0, 0, width, height);
     updateCaptions();
 }
 
