@@ -13,7 +13,7 @@ function preload() {
     loadStrings("fragment.frag", (data) => { fragmentShaderSource = data.join("\n"); });
 
     // Load audio from Dropbox or Cloudinary
-audio = loadSound('https://www.dropbox.com/scl/fi/5gyk5qx83cdwpm06lt095/rtkgreenwelcome.mp3?rlkey=l7tqm9xv37byk34vrlkwg6lk6&raw=1');
+audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN_Cp_cxmBgwAU3a_YBb');
 
     // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
