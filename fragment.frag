@@ -65,8 +65,8 @@ void main() {
     finalColor += vec3(grain);
 
     // TEMPORARY DEBUG (remove when working)
-    // finalColor.r += step(0.99, abs(uv.x)) * 0.5; // Red vertical borders
-    // finalColor.g += step(0.99, abs(uv.y)) * 0.5; // Green horizontal borders
+  finalColor.r += step(0.99, abs(uv.x)) * 0.5; // Red vertical borders
+ finalColor.g += step(0.99, abs(uv.y)) * 0.5; // Green horizontal borders
 
     gl_FragColor = vec4(finalColor, blob);
 }
