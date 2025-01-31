@@ -20,6 +20,8 @@ function setup() {
     canvas.parent('p5-container');
     noStroke();
 
+    clear(0, 0, 0, 0);
+
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
@@ -34,6 +36,8 @@ function setup() {
 
 function draw() {
     if (!theShader) return;
+
+    clear(0, 0, 0, 0);
 
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
@@ -51,8 +55,7 @@ function draw() {
 // ✅ Move the orb down slightly to center under text
     translate(0, 50); // Move down (increase or decrease 50px as needed)
 
-    rect(-width / 2, -height / 2, width, height);
-
+rect(-width/4, -height/4, width/2, height/2);
     updateCaptions();
 }
 
