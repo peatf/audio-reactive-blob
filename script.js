@@ -62,7 +62,7 @@ function draw() {
     push();
     resetShader();
     imageMode(CENTER);
-    blendMode(HARD_LIGHT);
+    blendMode(MULTIPLY);
     if (textureImg) {
         image(textureImg, 0, 0, width, height);
     }
