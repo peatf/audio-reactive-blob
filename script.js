@@ -19,7 +19,6 @@ function preload() {
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
-     pixelDensity(1); 
     noStroke();
  console.log('vertexShaderSource:', vertexShaderSource);
     console.log('fragmentShaderSource:', fragmentShaderSource);
