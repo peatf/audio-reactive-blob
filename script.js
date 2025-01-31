@@ -63,6 +63,51 @@ function mousePressed() {
     }
 }
 
+function loadCaptions(file) {
+    fetch(file)
+        .then(response => response.text())
+        .then(text => {
+            parseCaptions(text);
+            console.log("Loaded captions:", captions); // ✅ Debugging check
+        })
+        .catch(() => console.error("Captions file not found: " + file));
+}
+
+function parseCaptions(data) {
+    let lines = data.split("\n");
+    let current = null;
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+
+        if (line.includes("-->")) {
+            let times = line.split(" --> ");
+            let start = timeToSeconds(times[0]);
+            let end = timeToSeconds(times[1]);
+            current = { start, end, text: "" };
+        } else if (line.length > 0 && current) {
+            current.text += (current.text ? "\n" : "") + line; // ✅ Allow multi-line captions
+        } else if (line === "" && current) {
+            captions.push(current);
+            current = null;
+        }
+    }
+
+    console.log("Final Captions:", captions); // ✅ Debugging check
+}
+
+function timeToSeconds(timeStr) {
+    let parts = timeStr.split(":");
+    if (parts.length === 3) {
+        return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
+    } else if (parts.length === 2) {
+        return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
+    } else {
+        console.error("Invalid time format:", timeStr);
+        return 0;
+    }
+}
+
 function updateCaptions() {
     if (!audio.isPlaying()) {
         captionElement.innerHTML = "Click to play.";
@@ -70,10 +115,14 @@ function updateCaptions() {
     }
 
     let currentTime = audio.currentTime();
+    console.log("Audio Time:", currentTime); // ✅ Debugging check
 
     for (let i = 0; i < captions.length; i++) {
+        console.log("Checking Caption:", captions[i]); // ✅ Debugging check
+
         if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
             if (currentCaption !== captions[i].text) {
+                console.log("Showing Caption:", captions[i].text); // ✅ Debugging check
                 currentCaption = captions[i].text;
                 captionElement.innerHTML = currentCaption;
             }
