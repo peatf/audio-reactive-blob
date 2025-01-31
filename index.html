@@ -7,36 +7,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
-   <style>
-    body { 
-        margin: 0;
-        overflow: hidden;
-    }
-    #background-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-    #p5-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 2;
-        pointer-events: none;
-    }
-    #p5-container canvas {
-    display: block !important;
-    margin: auto !important;
-    position: fixed; /* Add this */
-    top: 50% !important; /* Center vertically */
-    left: 50% !important; /* Center horizontally */
-    transform: translate(-50%, -50%) !important; /* Perfect centering */
-}
+    <style>
+        body { 
+            margin: 0;
+            overflow: hidden;
+        }
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        #p5-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        #p5-container canvas {
+            display: block !important;
+            margin: auto !important;
+            position: fixed;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+        }
         #caption {
             position: fixed;
             bottom: 20px;
@@ -53,28 +53,27 @@
             word-wrap: break-word;
             white-space: pre-wrap;
         }
+        #texture-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('A seamless, grainy pencil texture 1.png');
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 4;
+            mix-blend-mode: multiply;
+        }
     </style>
 </head>
 <body>
     <div id="background-canvas"></div>
     <div id="p5-container"></div>
     <div id="caption">Click anywhere to play/pause audio.</div>
+    <div id="texture-overlay"></div>
+    
     <script src="background.js"></script>
     <script src="script.js"></script>
 </body>
-    <div id="texture-overlay"></div>
-<style>
-  #texture-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('path/to/pencil-texture.png');
-    opacity: 0.15;
-    pointer-events: none;
-    z-index: 4; /* Above all other elements */
-    mix-blend-mode: multiply; /* Try overlay/screen for different effects */
-  }
-</style>
 </html>
