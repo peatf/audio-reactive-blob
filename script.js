@@ -18,7 +18,7 @@ function preload() {
 }
 
 function preload() {
-  pencilTexture = loadImage('A seamless, grainy pencil texture 1.png');
+  pencilTexture = loadImage('seamless-grainy-pencil-texture-1.png');
 }
 
 function setup() {
