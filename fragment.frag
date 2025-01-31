@@ -1,5 +1,6 @@
-precision mediump float;
+=precision mediump float;
 
+// --- Declare uniforms first ---
 varying vec2 vTexCoord;
 uniform float u_time;
 uniform float u_audioLevel;
@@ -7,6 +8,7 @@ uniform float u_bassLevel;
 uniform float u_trebleLevel;
 uniform vec2 u_resolution;
 
+// --- Noise functions ---
 float noise(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
@@ -22,7 +24,7 @@ float fbm(vec2 p) {
     return total;
 }
 
-// ---- ORB FUNCTION ----
+// --- Orb function ---
 float jellyBlob(vec2 uv, float baseRadius, float wobble) {
     float dist = length(uv);
     float audioWobble = (u_audioLevel * 0.4) + (u_bassLevel * 0.3) + (u_trebleLevel * 0.2);
@@ -30,29 +32,14 @@ float jellyBlob(vec2 uv, float baseRadius, float wobble) {
     return smoothstep(baseRadius + distortion, baseRadius - 0.02, dist);
 }
 
-float softLight(vec2 uv, float spread) {
-    return exp(-pow(length(uv) * spread, 2.0));
-}
-
-float integratedShine(vec2 uv, float blobMask, float intensity) {
-    vec2 shinePos = vec2(
-        sin(u_time * 0.5) * 0.2,
-        cos(u_time * 0.5) * 0.2
-    );
-    shinePos *= (1.0 + u_trebleLevel * 0.5);
-    float distanceToShine = length(uv - shinePos);
-    float shine = smoothstep(0.35, 0.0, distanceToShine);
-    shine *= exp(-distanceToShine * 3.5);
-    return shine * intensity * blobMask;
-}
-
+// --- Main ---
 void main() {
-    vec2 uv = (vTexCoord * 2.0 - 1.0) * vec2(u_resolution.x/u_resolution.y, 1.0);
-
-    // RESTORE ORB LOGIC
-    vec3 jellyColor = vec3(0.1, 0.8, 0.3);
-    vec3 bgColor = vec3(0.0);
+    // Declare 'uv' FIRST
+    vec2 uv = (vTexCoord * 2.0 - 1.0) * vec2(u_resolution.x / u_resolution.y, 1.0);
+    
+    // Use 'jellyBlob' AFTER its declaration
     float blob = jellyBlob(uv, 0.4, 0.1);
-       // SIMPLE OUTPUT (TEMPORARY)
-    gl_FragColor = vec4(mix(bgColor, jellyColor, blob), blob);
+    vec3 finalColor = mix(vec3(0.0), vec3(0.1, 0.8, 0.3), blob);
+    
+    gl_FragColor = vec4(finalColor, blob);
 }
