@@ -47,9 +47,15 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-    // PROPER CENTERED UV CALCULATION
-    vec2 uv = vTexCoord * 2.0 - 1.0; // Convert to [-1, 1] range
-    uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio correction
+     // 1. PROPER CENTERED UV SYSTEM
+    vec2 uv = vTexCoord * 2.0 - 1.0; // Convert to [-1, 1]
+    uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio fix
+   
+// 2. DEBUG: Visualize coordinate boundaries (temporary)
+    vec3 debug = vec3(0.0);
+    debug.r = smoothstep(0.95, 1.0, abs(uv.x)); // Red at screen edges
+    debug.g = smoothstep(0.95, 1.0, abs(uv.y)); // Green at screen edges
+
     
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0);
@@ -59,14 +65,11 @@ void main() {
     float specular = integratedShine(uv, blob, (1.0 + u_trebleLevel * 1.5));
     float grain = smoothstep(0.2, 0.5, blob) * noise(uv * 40.0 + u_time) * 0.2;
 
-    vec3 finalColor = mix(bgColor, jellyColor, blob);
+     vec3 finalColor = mix(bgColor, jellyColor, blob);
+    finalColor = mix(finalColor, debug, 0.5); // 50% debug overlay
     finalColor += vec3(lightScatter);
     finalColor += vec3(specular);
     finalColor += vec3(grain);
-
-    // TEMPORARY DEBUG (remove when working)
-  finalColor.r += step(0.99, abs(uv.x)) * 0.5; // Red vertical borders
- finalColor.g += step(0.99, abs(uv.y)) * 0.5; // Green horizontal borders
 
     gl_FragColor = vec4(finalColor, blob);
 }
