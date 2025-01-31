@@ -15,6 +15,11 @@ function preload() {
 
     // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
+    fetch('rtkgreenwelcome.vtt')
+    .then(response => response.text())
+    .then(text => console.log("VTT File Loaded:", text))
+    .catch(() => console.error("Failed to load captions"));
+
 }
 
 function setup() {
@@ -123,17 +128,20 @@ function updateCaptions() {
     }
 
     let currentTime = audio.currentTime();
+    let foundCaption = false;
 
     for (let i = 0; i < captions.length; i++) {
         if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
             if (currentCaption !== captions[i].text) {
                 currentCaption = captions[i].text;
                 captionElement.innerHTML = currentCaption;
-            }
-            return;
+         }
+            foundCaption = true;
+            break;
         }
     }
 
-    // If no matching caption, clear it
-    captionElement.innerHTML = "";
+    if (!foundCaption) {
+        captionElement.innerHTML = "";
+    }
 }
