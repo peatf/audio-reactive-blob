@@ -77,7 +77,7 @@ theShader.setUniform("u_resolution", [width * pixelDensity(), height * pixelDens
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
     theShader.setUniform('u_texture', pencilTexture);
-     theShader.setUniform('u_textureStrength', 0.2); // 0-1 (texture visibility)
+     theShader.setUniform('u_textureStrength', 0.35); // 0-1 (texture visibility)
 
 
       // FIXED: Simplified drawing logic
