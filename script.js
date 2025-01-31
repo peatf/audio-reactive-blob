@@ -63,7 +63,7 @@ function mousePressed() {
         audio.pause();
     } else {
         audio.play();
-        setTimeout(updateCaptions, 100); // ✅ Ensures captions resume correctly
+        updateCaptions(); // ✅ Ensures captions resume immediately
     }
 }
 
@@ -114,10 +114,7 @@ function timeToSeconds(timeStr) {
 }
 
 function updateCaptions() {
-    if (!audio.isPlaying()) {
-        captionElement.innerHTML = "Click to play.";
-        return;
-    }
+    if (!audio) return;
 
     let currentTime = audio.currentTime();
     console.log("Audio Time:", currentTime); // ✅ Debugging log
@@ -143,9 +140,6 @@ function updateCaptions() {
         captionElement.innerHTML = "";
     }
 
-    // ✅ Ensure updateCaptions() keeps running after resume
+    // ✅ Ensure updateCaptions() keeps running even when paused
     requestAnimationFrame(updateCaptions);
-}
-
-    captionElement.innerHTML = "";
 }
