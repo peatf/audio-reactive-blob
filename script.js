@@ -19,15 +19,22 @@ function preload() {
 }
 
 function setup() {
-    let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    // Get the container element
+    let container = document.getElementById('p5-container');
+    // Create the canvas using the container's dimensions
+    let canvas = createCanvas(container.clientWidth, container.clientHeight, WEBGL);
     canvas.parent('p5-container');
     noStroke();
-      rectMode(CENTER); 
- console.log('vertexShaderSource:', vertexShaderSource);
+    rectMode(CENTER);
+    
+    // Set pixel density to 1 for consistent scaling
+    pixelDensity(1);
+
+    console.log('vertexShaderSource:', vertexShaderSource);
     console.log('fragmentShaderSource:', fragmentShaderSource);
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
-
+    
     captionElement = document.getElementById("caption");
 
     // Create shader once sources are loaded
@@ -42,6 +49,7 @@ function setup() {
         console.error("Shader loading error:", err);
     });
 }
+
 
 function draw() {
     if (!theShader) return;
