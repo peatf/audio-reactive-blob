@@ -54,7 +54,7 @@ function draw() {
 
     shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
-theShader.setUniform("u_resolution", [width * pixelDensity(), height * pixelDensity()]);
+    theShader.setUniform("u_resolution", [width, height]);
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
