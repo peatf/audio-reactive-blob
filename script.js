@@ -12,7 +12,7 @@ function preload() {
     theShader = new p5.Shader(this.renderer, vertShader, fragShader);
 
     // Load your audio
-    audio = loadSound('your-audio.mp3');
+    audio = loadSound('rtkgreenwelcome.mp3');
 
     // Load captions file
     loadCaptions('captions.vtt');
