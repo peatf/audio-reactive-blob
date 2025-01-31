@@ -8,16 +8,31 @@ let currentCaption = "";
 let captionElement;
 
 function preload() {
-    // Load shaders as text files
-    loadStrings("vertex.vert", (data) => { vertexShaderSource = data.join("\n"); });
-    loadStrings("fragment.frag", (data) => { fragmentShaderSource = data.join("\n"); });
+    // Load shaders using loadStrings (p5.js will handle synchronization)
+    const vert = loadStrings('vertex.vert');
+    const frag = loadStrings('fragment.frag');
+    // Process shaders after loading
+    vert.then(data => window.vertexShaderSource = data.join('\n'));
+    frag.then(data => window.fragmentShaderSource = data.join('\n'));
 
-    // Load audio from Dropbox or Cloudinary
-audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
+    // Load audio
+    audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
 
     // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
 }
+
+function setup() {
+    createCanvas(600, 600, WEBGL);
+    noStroke();
+
+    // Ensure shaders are loaded
+    if (window.vertexShaderSource && window.fragmentShaderSource) {
+        theShader = createShader(window.vertexShaderSource, window.fragmentShaderSource);
+    } else {
+        console.error("Shaders not loaded!");
+    }
+
 
 function setup() {
     createCanvas(600, 600, WEBGL);
