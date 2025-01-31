@@ -63,7 +63,6 @@ function draw() {
    push();
         resetMatrix();  // Clear previous transformations
     translate(0, 0);
-    scale(1); // Makes the orb slightly smaller
     let size = min(width, height);
  rect(-1, -1, 2, 2);  // Covers entire WEBGL space (-1 to 1 in both axes)
     pop();
