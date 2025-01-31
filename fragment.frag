@@ -50,11 +50,6 @@ void main() {
        vec2 uv = vTexCoord * 2.0 - 1.0;
     uv.x *= u_resolution.x / u_resolution.y;  
 
-  vec3 grid = vec3(0.2);
-    grid.r += mod(uv.x, 0.25) < 0.01 ? 0.5 : 0.0;
-    grid.g += mod(uv.y, 0.25) < 0.01 ? 0.5 : 0.0;
-    finalColor = mix(grid, finalColor, blob);
-    
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0, 0.0, 0.0);  // Changed to vec3
     
@@ -65,9 +60,15 @@ void main() {
 
     // Fixed mix function - both arguments must be vec3
     vec3 finalColor = mix(bgColor, jellyColor, blob);
-    finalColor += vec3(lightScatter);  // Convert to vec3
-    finalColor += vec3(specular);      // Convert to vec3
-    finalColor += vec3(grain);         // Convert to vec3
-    
+    finalColor += vec3(lightScatter);
+    finalColor += vec3(specular);
+    finalColor += vec3(grain);
+
+    // Debug grid - ADD THIS RIGHT BEFORE gl_FragColor
+    vec3 grid = vec3(0.2);
+    grid.r += mod(uv.x, 0.25) < 0.01 ? 0.5 : 0.0;  // Vertical lines
+    grid.g += mod(uv.y, 0.25) < 0.01 ? 0.5 : 0.0;  // Horizontal lines
+    finalColor = mix(finalColor, grid, 0.3);       // 30% transparency overlay
+
     gl_FragColor = vec4(finalColor, blob);
 }
