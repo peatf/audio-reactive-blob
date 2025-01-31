@@ -23,6 +23,8 @@
             max-height: 600px;
         }
         #caption {
+            font-family: inherit; /* ✅ Uses the site's default font */
+    font-size: 1.2em;
             color: white;
             font-size: 18px;
             text-align: center;
@@ -30,6 +32,9 @@
             background: rgba(0, 0, 0, 0.5);
             padding: 10px;
             border-radius: 5px;
+               max-width: 80%; /* ✅ Ensures text stays inside the container */
+    word-wrap: break-word; /* ✅ Breaks words if too long */
+    white-space: pre-wrap; /* ✅ Preserves line breaks in captions */
         }
     </style>
 </head>
