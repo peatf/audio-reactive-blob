@@ -1,4 +1,3 @@
-// script.js
 let theShader;
 let audio, fft, amplitude;
 let audioLevel = 0;
@@ -8,23 +7,17 @@ let captions = [];
 let currentCaption = "";
 let captionElement;
 
-function setup() {
-    // Create canvas inside p5-container
-    let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
-    canvas.parent('p5-container');
-    noStroke();
-    
 function preload() {
     vertexShaderSource = loadStrings('vertex.vert');
     fragmentShaderSource = loadStrings('fragment.frag');
-
     audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
-
     loadCaptions('rtkgreenwelcome.vtt');
 }
 
 function setup() {
-    createCanvas(600, 600, WEBGL);
+    // Create canvas inside p5-container
+    let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    canvas.parent('p5-container');
     noStroke();
 
     amplitude = new p5.Amplitude();
@@ -38,7 +31,7 @@ function setup() {
         console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
     });
 }
-}
+
 function draw() {
     if (!theShader) return;
 
