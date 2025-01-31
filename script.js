@@ -28,7 +28,7 @@ function setup() {
     rectMode(CENTER);
     
     // Set pixel density to 1 for consistent scaling
-    pixelDensity(1);
+   pixelDensity(window.devicePixelRatio);
 
     console.log('vertexShaderSource:', vertexShaderSource);
     console.log('fragmentShaderSource:', fragmentShaderSource);
@@ -71,7 +71,7 @@ function draw() {
     trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
 
     shader(theShader);
-      theShader.setUniform("u_resolution", [width, height]);
+theShader.setUniform("u_resolution", [width * pixelDensity(), height * pixelDensity()]);
     theShader.setUniform("u_time", millis() / 1000.0);
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
