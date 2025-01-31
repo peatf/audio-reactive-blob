@@ -7,7 +7,7 @@ let trebleLevel = 0;
 
 function preload() {
   theShader = new p5.Shader(this.renderer, vertShader, fragShader);
-  audio = loadSound('your-audio.mp3'); // Load your audio file
+  audio = loadSound('rtkgreenwelcome.mp3'); // Load your audio file
 }
 
 function setup() {
