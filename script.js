@@ -19,6 +19,8 @@ function preload() {
             (err) => console.error('Fragment shader error:', err)
         );
         audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
+            textureImg = loadImage('A seamless, grainy pencil texture 1.png');
+
     } catch(e) {
         console.error('Error in preload:', e);
     }
@@ -82,6 +84,7 @@ function draw() {
     
     let size = min(width, height) * 0.4;
     rect(-size/2, -size/2, size, size);
+     }
  if (textureImg) {
         blendMode(MULTIPLY); // Change this mode if needed
         image(textureImg, -width / 2, -height / 2, width, height);
