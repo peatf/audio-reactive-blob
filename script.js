@@ -44,8 +44,8 @@ function setup() {
 function draw() {
     if (!theShader) return;
 
-    clear();
-
+ clear(0, 0, 0, 0);
+    
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
 
@@ -55,19 +55,17 @@ function draw() {
 
     shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
-    theShader.setUniform("u_resolution", [width * pixelDensity(), height * pixelDensity()]);
+theShader.setUniform("u_resolution", [width * pixelDensity(), height * pixelDensity()]);
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
 
-    // Center the orb
-   push();
-        resetMatrix();  // Clear previous transformations
-    translate(0, 0);
-        scale(1.0); // Explicitly set to no scaling
- let size = min(width, height);
- rect(-1, -1, 2, 2);  // Covers entire WEBGL space (-1 to 1 in both axes)
+      // FIXED: Simplified drawing logic
+    push();
+    resetMatrix();
+    rect(-1, -1, 2, 2); // Full-screen quad in WEBGL space
     pop();
+
     updateCaptions();
 }
 
