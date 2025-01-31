@@ -1,3 +1,4 @@
+// script.js
 let theShader;
 let audio, fft, amplitude;
 let audioLevel = 0;
@@ -7,6 +8,12 @@ let captions = [];
 let currentCaption = "";
 let captionElement;
 
+function setup() {
+    // Create canvas inside p5-container
+    let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+    canvas.parent('p5-container');
+    noStroke();
+    
 function preload() {
     vertexShaderSource = loadStrings('vertex.vert');
     fragmentShaderSource = loadStrings('fragment.frag');
@@ -31,7 +38,7 @@ function setup() {
         console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
     });
 }
-
+}
 function draw() {
     if (!theShader) return;
 
