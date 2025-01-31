@@ -16,6 +16,11 @@ function preload() {
     loadCaptions('rtkgreenwelcome.vtt');
 }
 
+let pencilTexture;
+function preload() {
+  pencilTexture = loadImage('A seamless, grainy pencil texture 1.png');
+}
+
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
@@ -57,6 +62,8 @@ function draw() {
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
+    theShader.setUniform('u_texture', pencilTexture);
+
 
       // FIXED: Simplified drawing logic
        rect(0, 0, width, height); // Use screen coordinates
