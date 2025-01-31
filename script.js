@@ -6,7 +6,7 @@ let currentCaption = "";
 let captionElement;
 
 function preload() {
-    // Load shaders using loadStrings (p5.js handles synchronization)
+    // Load shaders as strings
     vertexShaderSource = loadStrings('vertex.vert');
     fragmentShaderSource = loadStrings('fragment.frag');
 
@@ -26,7 +26,7 @@ function setup() {
 
     captionElement = document.getElementById("caption");
 
-    // Wait for shaders before creating them
+    // Wait for shaders before applying them
     Promise.all([vertexShaderSource, fragmentShaderSource]).then(([vertData, fragData]) => {
         theShader = createShader(vertData.join('\n'), fragData.join('\n'));
     }).catch(() => {
@@ -35,35 +35,27 @@ function setup() {
 }
 
 function draw() {
-    if (!theShader) return;  // Exit if shader isn't ready
+    if (!theShader) return;
 
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
 
-    let spectrum = fft.analyze();
-    let bassLevel = lerp(fft.getEnergy("bass") / 255, 0.2);
-    let trebleLevel = lerp(fft.getEnergy("treble") / 255, 0.2);
-
-    // Apply shader to the main canvas
     shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
     theShader.setUniform("u_resolution", [width, height]);
     theShader.setUniform("u_audioLevel", audioLevel);
-    theShader.setUniform("u_bassLevel", bassLevel);
-    theShader.setUniform("u_trebleLevel", trebleLevel);
-    
-    // Draw the geometry to apply the shader
-    rect(0, 0, width, height);
+
+    rect(-width / 2, -height / 2, width, height);
 
     updateCaptions();
 }
 
 function mousePressed() {
-    if (!audio) return;  // Ensure audio is loaded
+    if (!audio) return;
     if (audio.isPlaying()) {
         audio.pause();
     } else {
-        audio.play();  // Play instead of loop() if you want it once
+        audio.play();
     }
 }
 
