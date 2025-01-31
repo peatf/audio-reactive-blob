@@ -61,10 +61,11 @@ function draw() {
 
     // Center the orb
    push();
+        resetMatrix();  // Clear previous transformations
     translate(0, 0);
     scale(1); // Makes the orb slightly smaller
     let size = min(width, height);
-    rect(-width/2, -height/2, width, height);  // Proper centered drawing
+ rect(-1, -1, 2, 2);  // Covers entire WEBGL space (-1 to 1 in both axes)
     pop();
     updateCaptions();
 }
