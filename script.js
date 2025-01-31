@@ -62,9 +62,9 @@ function draw() {
     // Center the orb
    push();
     translate(0, 0);
-    scale(0.8); // Makes the orb slightly smaller
+    scale(1); // Makes the orb slightly smaller
     let size = min(width, height);
-    rect(-size/2, -size/2, size, size);
+    rect(0, 0, size, size);
     pop();
     updateCaptions();
 }
