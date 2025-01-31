@@ -1,6 +1,4 @@
-let vertexShaderSource, fragmentShaderSource;
 let theShader;
-let shaderCanvas;
 let audio, fft, amplitude;
 let audioLevel = 0;
 let captions = [];
@@ -8,12 +6,9 @@ let currentCaption = "";
 let captionElement;
 
 function preload() {
-    // Load shaders using loadStrings (p5.js will handle synchronization)
-    const vert = loadStrings('vertex.vert');
-    const frag = loadStrings('fragment.frag');
-    // Process shaders after loading
-    vert.then(data => window.vertexShaderSource = data.join('\n'));
-    frag.then(data => window.fragmentShaderSource = data.join('\n'));
+    // Load shaders using loadStrings (p5.js handles synchronization)
+    vertexShaderSource = loadStrings('vertex.vert');
+    fragmentShaderSource = loadStrings('fragment.frag');
 
     // Load audio
     audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
@@ -26,39 +21,21 @@ function setup() {
     createCanvas(600, 600, WEBGL);
     noStroke();
 
-    // Ensure shaders are loaded
-    if (window.vertexShaderSource && window.fragmentShaderSource) {
-        theShader = createShader(window.vertexShaderSource, window.fragmentShaderSource);
-    } else {
-        console.error("Shaders not loaded!");
-    }
-
-
-function setup() {
-    createCanvas(600, 600, WEBGL);
-    noStroke();
-
-    shaderCanvas = createGraphics(width, height, WEBGL);
-    shaderCanvas.noStroke();
-
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
     captionElement = document.getElementById("caption");
 
     // Wait for shaders before creating them
-    if (vertexShaderSource && fragmentShaderSource) {
-        theShader = new p5.Shader(this._renderer, vertexShaderSource, fragmentShaderSource);
-    } else {
+    Promise.all([vertexShaderSource, fragmentShaderSource]).then(([vertData, fragData]) => {
+        theShader = createShader(vertData.join('\n'), fragData.join('\n'));
+    }).catch(() => {
         console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
-    }
+    });
 }
 
 function draw() {
-    if (!theShader) {
-        console.error("Shader failed to load. Check 'vertex.vert' and 'fragment.frag'.");
-        return;
-    }
+    if (!theShader) return;  // Exit if shader isn't ready
 
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
@@ -67,24 +44,26 @@ function draw() {
     let bassLevel = lerp(fft.getEnergy("bass") / 255, 0.2);
     let trebleLevel = lerp(fft.getEnergy("treble") / 255, 0.2);
 
-    shaderCanvas.shader(theShader);
+    // Apply shader to the main canvas
+    shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
     theShader.setUniform("u_resolution", [width, height]);
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
     
-    shaderCanvas.rect(0, 0, width, height);
-    image(shaderCanvas, -width / 2, -height / 2, width, height);
+    // Draw the geometry to apply the shader
+    rect(0, 0, width, height);
 
     updateCaptions();
 }
 
 function mousePressed() {
+    if (!audio) return;  // Ensure audio is loaded
     if (audio.isPlaying()) {
         audio.pause();
     } else {
-        audio.loop();
+        audio.play();  // Play instead of loop() if you want it once
     }
 }
 
