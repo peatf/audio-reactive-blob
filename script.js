@@ -14,6 +14,8 @@ function preload() {
     fragmentShaderSource = loadStrings('fragment.frag');
     audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
     loadCaptions('rtkgreenwelcome.vtt');
+    textureImg = loadImage('A seamless, grainy pencil texture 1.png');
+
 }
 
 function setup() {
@@ -65,6 +67,17 @@ function draw() {
     scale(0.8); // Makes the orb slightly smaller
     let size = min(width, height);
     rect(-size/2, -size/2, size, size);
+    pop();
+
+        // Then overlay texture
+
+    push();
+    resetShader(); // Important! Reset shader before drawing texture
+    textureMode(NORMAL);
+    blendMode(MULTIPLY);
+    translate(-width/2, -height/2); // Position for WEBGL mode
+    image(textureImg, 0, 0, width, height);
+    blendMode(BLEND);
     pop();
     updateCaptions();
 }
