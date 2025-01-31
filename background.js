@@ -159,3 +159,34 @@ window.addEventListener('resize', () => {
     renderer.setSize(width, height);
     uniforms.resolution.value.set(width, height);
 });
+// Add after your existing Three.js setup
+const overlayTexture = new THREE.TextureLoader().load('path/to/pencil-texture.png');
+const overlayMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    texture1: { value: overlayTexture },
+    opacity: { value: 0.3 } // Adjust texture visibility
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D texture1;
+    uniform float opacity;
+    varying vec2 vUv;
+    void main() {
+      vec4 textureColor = texture2D(texture1, vUv * 5.0); // Tile texture 5x
+      gl_FragColor = vec4(textureColor.rgb, opacity);
+    }
+  `,
+  transparent: true
+});
+
+const overlayPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(2, 2),
+  overlayMaterial
+);
+scene.add(overlayPlane);
