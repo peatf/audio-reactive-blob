@@ -51,16 +51,18 @@ void main() {
     uv.x *= u_resolution.x / u_resolution.y;
     
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
-    vec3 bgColor = vec3(0.0);
+    vec3 bgColor = vec3(0.0, 0.0, 0.0);  // Changed to vec3
     
     float blob = jellyBlob(uv, 0.4, 0.1);
     float lightScatter = softLight(uv * 1.5, 2.0) * 0.5;
     float specular = integratedShine(uv, blob, (1.0 + u_trebleLevel * 1.5));
     float grain = smoothstep(0.2, 0.5, blob) * noise(uv * 40.0 + u_time) * 0.2;
     
-    vec3 finalColor = mix(bgColor, jellyColor + lightScatter, blob);
-    finalColor += specular;
-    finalColor += grain;
+    // Fixed mix function - both arguments must be vec3
+    vec3 finalColor = mix(bgColor, jellyColor, blob);
+    finalColor += vec3(lightScatter);  // Convert to vec3
+    finalColor += vec3(specular);      // Convert to vec3
+    finalColor += vec3(grain);         // Convert to vec3
     
     gl_FragColor = vec4(finalColor, blob);
 }
