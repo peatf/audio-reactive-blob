@@ -11,10 +11,13 @@ let captionElement;
 function preload() {
     theShader = new p5.Shader(this.renderer, vertShader, fragShader);
 
-    // Load your audio
-    audio = loadSound('rtkgreenwelcome.mp3');
+    // Load your audio file
+    audio = loadSound('rtkgreenwelcome.mp3', 
+        () => console.log("Audio loaded successfully"), 
+        () => console.error("Failed to load audio. Make sure 'rtkgreenwelcome.mp3' exists.")
+    );
 
-    // Load captions file
+    // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
 }
 
@@ -28,11 +31,19 @@ function setup() {
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
-    // Get the caption element
     captionElement = document.getElementById("caption");
+
+    if (!audio) {
+        console.error("Audio file not found. Check your GitHub repository.");
+    }
 }
 
 function draw() {
+    if (!theShader) {
+        console.error("Shader failed to load. Check if 'vertex.vert' and 'fragment.frag' exist.");
+        return;
+    }
+
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
 
@@ -50,11 +61,9 @@ function draw() {
     shaderCanvas.rect(0, 0, width, height);
     image(shaderCanvas, -width / 2, -height / 2, width, height);
 
-    // Update caption based on audio time
     updateCaptions();
 }
 
-// Click to play or pause audio
 function mousePressed() {
     if (audio.isPlaying()) {
         audio.pause();
@@ -63,14 +72,13 @@ function mousePressed() {
     }
 }
 
-// Load captions from .vtt file
 function loadCaptions(file) {
     fetch(file)
         .then(response => response.text())
-        .then(text => parseCaptions(text));
+        .then(text => parseCaptions(text))
+        .catch(() => console.error("Captions file not found: " + file));
 }
 
-// Parse WebVTT captions
 function parseCaptions(data) {
     let lines = data.split("\n");
     let current = null;
@@ -91,7 +99,6 @@ function parseCaptions(data) {
     }
 }
 
-// Convert WebVTT time format to seconds
 function timeToSeconds(time) {
     let parts = time.split(":");
     let seconds = parseFloat(parts[2]);
@@ -100,7 +107,6 @@ function timeToSeconds(time) {
     return seconds;
 }
 
-// Update captions based on current audio time
 function updateCaptions() {
     if (!audio.isPlaying()) return;
 
@@ -115,6 +121,5 @@ function updateCaptions() {
         }
     }
 
-    // If no matching caption, clear it
     captionElement.innerHTML = "";
 }
