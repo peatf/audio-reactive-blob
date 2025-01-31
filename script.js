@@ -1,29 +1,22 @@
+let vertexShaderSource;
+let fragmentShaderSource;
 let theShader;
 let shaderCanvas;
 let audio, fft, amplitude;
 let audioLevel = 0;
-let bassLevel = 0;
-let trebleLevel = 0;
 let captions = [];
 let currentCaption = "";
 let captionElement;
 
 function preload() {
     // Load shaders as text files
-    loadStrings("vertex.vert", (data) => {
-        vertexShaderSource = data.join("\n");
-    });
-    loadStrings("fragment.frag", (data) => {
-        fragmentShaderSource = data.join("\n");
-    });
+    loadStrings("vertex.vert", (data) => { vertexShaderSource = data.join("\n"); });
+    loadStrings("fragment.frag", (data) => { fragmentShaderSource = data.join("\n"); });
 
     // Load audio
-audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN_Cp_cxmBgwAU3a_YBb');
-        () => console.log("Audio loaded successfully"), 
-        () => console.error("Failed to load audio. Make sure 'rtkgreenwelcome.mp3' exists.")
-    );
+    audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN_Cp_cxmBgwAU3a_YBb');
 
-    // Load captions file
+    // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
 }
 
@@ -39,12 +32,12 @@ function setup() {
 
     captionElement = document.getElementById("caption");
 
-    if (!audio) {
-        console.error("Audio file not found. Check your GitHub repository.");
+    // Wait for shaders to load before creating the shader
+    if (vertexShaderSource && fragmentShaderSource) {
+        theShader = new p5.Shader(this._renderer, vertexShaderSource, fragmentShaderSource);
+    } else {
+        console.error("Shaders failed to load. Check if 'vertex.vert' and 'fragment.frag' exist.");
     }
-
-    // Create shader once text files are loaded
-    theShader = new p5.Shader(this._renderer, vertexShaderSource, fragmentShaderSource);
 }
 
 function draw() {
