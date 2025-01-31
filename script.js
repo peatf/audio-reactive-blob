@@ -11,14 +11,11 @@ let fragmentShaderSource;
 let pencilTexture;
 
 function preload() {
-    vertexShaderSource = loadStrings('vertex.vert');
+     vertexShaderSource = loadStrings('vertex.vert');
     fragmentShaderSource = loadStrings('fragment.frag');
     audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
+    pencilTexture = loadImage('seamless-grainy-pencil-texture-1.png');
     loadCaptions('rtkgreenwelcome.vtt');
-}
-
-function preload() {
-  pencilTexture = loadImage('seamless-grainy-pencil-texture-1.png');
 }
 
 function setup() {
