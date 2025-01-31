@@ -47,8 +47,8 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-    vec2 uv = vTexCoord * 2.0 - 1.0;
-    uv.x *= u_resolution.x / u_resolution.y;
+     vec2 uv = vTexCoord * 2.0 - 1.0;
+    uv *= vec2(u_resolution.x / u_resolution.y, 1.0);
     
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0, 0.0, 0.0);  // Changed to vec3
