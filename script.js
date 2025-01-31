@@ -60,6 +60,7 @@ function draw() {
 
 let size = min(width, height) * 0.4; // Adjust 0.4 to change size
     rect(-size/2, -size/2, size, size);
+}
     updateCaptions();
 }
 
