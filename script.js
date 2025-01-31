@@ -6,62 +6,41 @@ let trebleLevel = 0;
 let captions = [];
 let currentCaption = "";
 let captionElement;
+let vertexShaderSource;
+let fragmentShaderSource;
 
 function preload() {
-    // Add error handling and logging
-    try {
-        vertexShaderSource = loadStrings('vertex.vert', 
-            () => console.log('Vertex shader loaded'),
-            (err) => console.error('Vertex shader error:', err)
-        );
-        fragmentShaderSource = loadStrings('fragment.frag',
-            () => console.log('Fragment shader loaded'),
-            (err) => console.error('Fragment shader error:', err)
-        );
-        audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
-
-    } catch(e) {
-        console.error('Error in preload:', e);
-    }
+    vertexShaderSource = loadStrings('vertex.vert');
+    fragmentShaderSource = loadStrings('fragment.frag');
+    audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
+    loadCaptions('rtkgreenwelcome.vtt');
 }
 
 function setup() {
-    console.log('Setup started');
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
     noStroke();
 
-    setAttributes({
-        alpha: true
-    });
-    
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
     captionElement = document.getElementById("caption");
 
-    // Modified shader creation with error checking
-    if (vertexShaderSource && fragmentShaderSource) {
-        console.log('Creating shader');
+    // Create shader once sources are loaded
+    Promise.all([vertexShaderSource, fragmentShaderSource]).then(([vertData, fragData]) => {
         try {
-            theShader = createShader(
-                vertexShaderSource.join('\n'),
-                fragmentShaderSource.join('\n')
-            );
+            theShader = createShader(vertData.join('\n'), fragData.join('\n'));
             console.log('Shader created successfully');
-        } catch(e) {
-            console.error('Error creating shader:', e);
+        } catch(err) {
+            console.error("Shader creation error:", err);
         }
-    } else {
-        console.error('Shader sources not loaded');
-    }
+    }).catch((err) => {
+        console.error("Shader loading error:", err);
+    });
 }
 
 function draw() {
-    if (!theShader) {
-        console.log('Shader not ready');
-        return;
-    }
+    if (!theShader) return;
 
     clear(0, 0, 0, 0);
 
@@ -79,10 +58,11 @@ function draw() {
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
 
+    // Center the orb
     translate(0, 50);
-    
     let size = min(width, height) * 0.4;
     rect(-size/2, -size/2, size, size);
+
     updateCaptions();
 }
 
@@ -93,17 +73,15 @@ function mousePressed() {
         audio.pause();
     } else {
         audio.play();
-        updateCaptions(); // ✅ Ensures captions resume immediately
+        updateCaptions();
     }
 }
-
 
 function loadCaptions(file) {
     fetch(file)
         .then(response => response.text())
         .then(text => {
             parseCaptions(text);
-            console.log("Loaded captions:", captions); // ✅ Debugging check
         })
         .catch(() => console.error("Captions file not found: " + file));
 }
@@ -121,14 +99,12 @@ function parseCaptions(data) {
             let end = timeToSeconds(times[1]);
             current = { start, end, text: "" };
         } else if (line.length > 0 && current) {
-            current.text += (current.text ? "\n" : "") + line; // ✅ Allow multi-line captions
+            current.text += (current.text ? "\n" : "") + line;
         } else if (line === "" && current) {
             captions.push(current);
             current = null;
         }
     }
-
-    console.log("Final Captions:", captions); // ✅ Debugging check
 }
 
 function timeToSeconds(timeStr) {
@@ -137,26 +113,19 @@ function timeToSeconds(timeStr) {
         return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
     } else if (parts.length === 2) {
         return parseInt(parts[0]) * 60 + parseFloat(parts[1]);
-    } else {
-        console.error("Invalid time format:", timeStr);
-        return 0;
     }
+    return 0;
 }
 
 function updateCaptions() {
     if (!audio) return;
 
     let currentTime = audio.currentTime();
-    console.log("Audio Time:", currentTime); // ✅ Debugging log
-
-    let foundCaption = false; // ✅ Track if a caption was found
+    let foundCaption = false;
 
     for (let i = 0; i < captions.length; i++) {
-        console.log("Checking Caption:", captions[i]); // ✅ Debugging log
-
         if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
             if (currentCaption !== captions[i].text) {
-                console.log("Showing Caption:", captions[i].text); // ✅ Debugging log
                 currentCaption = captions[i].text;
                 captionElement.innerHTML = currentCaption;
             }
@@ -165,11 +134,9 @@ function updateCaptions() {
         }
     }
 
-    // ✅ If no caption is found, don't overwrite previous text
     if (!foundCaption) {
         captionElement.innerHTML = "";
     }
 
-    // ✅ Ensure updateCaptions() keeps running even when paused
     requestAnimationFrame(updateCaptions);
 }
