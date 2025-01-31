@@ -47,26 +47,6 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-    // 1. PROPER CENTERED UV SYSTEM
-    vec2 uv = vTexCoord * 2.0 - 1.0; // Convert to [-1, 1] range
-    uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio correction
-
-    // 2. ORB CALCULATIONS (CENTER TEST)
-    vec3 jellyColor = vec3(0.1, 0.8, 0.3);
-    vec3 bgColor = vec3(0.0);
-    
-    // Simple centered circle test
-    float dist = length(uv);
-    float blob = smoothstep(0.4, 0.39, dist); // Radius 0.4
-    
-    // 3. MANDATORY DEBUG VISUALS
-    // Red screen edges (should touch window borders)
-    vec3 debug = vec3(0.0);
-    debug.r = smoothstep(0.95, 1.0, abs(uv.x));
-    debug.g = smoothstep(0.95, 1.0, abs(uv.y));
-    
-    // 4. FINAL OUTPUT
-    vec3 finalColor = mix(bgColor, jellyColor, blob);
-    finalColor = mix(finalColor, debug, 0.5); // 50% debug overlay
-    gl_FragColor = vec4(finalColor, 1.0);
+ void main() {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Full red screen test
 }
