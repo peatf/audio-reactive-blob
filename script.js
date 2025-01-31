@@ -95,9 +95,13 @@ function timeToSeconds(time) {
 }
 
 function updateCaptions() {
-    if (!audio.isPlaying()) return;
+    if (!audio.isPlaying()) {
+        captionElement.innerHTML = "Click to play.";
+        return;
+    }
 
     let currentTime = audio.currentTime();
+
     for (let i = 0; i < captions.length; i++) {
         if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
             if (currentCaption !== captions[i].text) {
@@ -108,5 +112,6 @@ function updateCaptions() {
         }
     }
 
+    // If no matching caption, clear it
     captionElement.innerHTML = "";
 }
