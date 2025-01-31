@@ -63,7 +63,8 @@ theShader.setUniform("u_resolution", [width * pixelDensity(), height * pixelDens
       // FIXED: Simplified drawing logic
     push();
     resetMatrix();
-    rect(-1, -1, 2, 2); // Full-screen quad in WEBGL space
+    scale(1, -1); // Flip Y-axis to match WebGL's coordinate system
+    rect(-1, -1, 2, 2); // Full-screen quad
     pop();
 
     updateCaptions();
