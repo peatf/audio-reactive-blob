@@ -20,7 +20,8 @@ function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
     noStroke();
-
+ console.log('vertexShaderSource:', vertexShaderSource);
+    console.log('fragmentShaderSource:', fragmentShaderSource);
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
