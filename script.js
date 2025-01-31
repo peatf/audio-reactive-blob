@@ -60,10 +60,9 @@ function draw() {
     theShader.setUniform("u_trebleLevel", trebleLevel);
 
     // Center the orb
-    translate(0, 50);
+    translate(0, 0); // Reset to center
     let size = min(width, height) * 0.4;
     rect(-size/2, -size/2, size, size);
-
     updateCaptions();
 }
 
