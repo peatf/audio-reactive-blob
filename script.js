@@ -1,5 +1,4 @@
-let vertexShaderSource;
-let fragmentShaderSource;
+let vertexShaderSource, fragmentShaderSource;
 let theShader;
 let shaderCanvas;
 let audio, fft, amplitude;
@@ -13,8 +12,8 @@ function preload() {
     loadStrings("vertex.vert", (data) => { vertexShaderSource = data.join("\n"); });
     loadStrings("fragment.frag", (data) => { fragmentShaderSource = data.join("\n"); });
 
-    // Load audio
-    audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN_Cp_cxmBgwAU3a_YBb');
+    // Load audio from Dropbox or Cloudinary
+audio = loadSound('https://www.dropbox.com/scl/fi/5gyk5qx83cdwpm06lt095/rtkgreenwelcome.mp3?rlkey=l7tqm9xv37byk34vrlkwg6lk6&raw=1');
 
     // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
@@ -23,26 +22,26 @@ function preload() {
 function setup() {
     createCanvas(600, 600, WEBGL);
     noStroke();
-    
+
     shaderCanvas = createGraphics(width, height, WEBGL);
     shaderCanvas.noStroke();
-    
+
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
     captionElement = document.getElementById("caption");
 
-    // Wait for shaders to load before creating the shader
+    // Wait for shaders before creating them
     if (vertexShaderSource && fragmentShaderSource) {
         theShader = new p5.Shader(this._renderer, vertexShaderSource, fragmentShaderSource);
     } else {
-        console.error("Shaders failed to load. Check if 'vertex.vert' and 'fragment.frag' exist.");
+        console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
     }
 }
 
 function draw() {
     if (!theShader) {
-        console.error("Shader failed to load. Check if 'vertex.vert' and 'fragment.frag' exist.");
+        console.error("Shader failed to load. Check 'vertex.vert' and 'fragment.frag'.");
         return;
     }
 
@@ -50,8 +49,8 @@ function draw() {
     audioLevel = lerp(audioLevel, level, 0.2);
 
     let spectrum = fft.analyze();
-    bassLevel = lerp(bassLevel, fft.getEnergy("bass") / 255, 0.2);
-    trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
+    let bassLevel = lerp(fft.getEnergy("bass") / 255, 0.2);
+    let trebleLevel = lerp(fft.getEnergy("treble") / 255, 0.2);
 
     shaderCanvas.shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
