@@ -39,11 +39,17 @@ function draw() {
 
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
+    let spectrum = fft.analyze();
+bassLevel = lerp(bassLevel, fft.getEnergy("bass") / 255, 0.2);
+trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
+
 
     shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
-    theShader.setUniform("u_resolution", [width, height]);
-    theShader.setUniform("u_audioLevel", audioLevel);
+theShader.setUniform("u_resolution", [width, height]);
+theShader.setUniform("u_audioLevel", audioLevel);
+theShader.setUniform("u_bassLevel", bassLevel);
+theShader.setUniform("u_trebleLevel", trebleLevel);
 
     rect(-width / 2, -height / 2, width, height);
 
