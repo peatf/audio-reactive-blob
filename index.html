@@ -30,9 +30,13 @@
         pointer-events: none;
     }
     #p5-container canvas {
-        display: block !important;
-        margin: auto !important;
-    }
+    display: block !important;
+    margin: auto !important;
+    position: fixed; /* Add this */
+    top: 50% !important; /* Center vertically */
+    left: 50% !important; /* Center horizontally */
+    transform: translate(-50%, -50%) !important; /* Perfect centering */
+}
         #caption {
             position: fixed;
             bottom: 20px;
