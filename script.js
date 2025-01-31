@@ -8,6 +8,7 @@ let currentCaption = "";
 let captionElement;
 let vertexShaderSource;
 let fragmentShaderSource;
+let pencilTexture;
 
 function preload() {
     vertexShaderSource = loadStrings('vertex.vert');
@@ -16,9 +17,8 @@ function preload() {
     loadCaptions('rtkgreenwelcome.vtt');
 }
 
-let pencilTexture;
 function preload() {
-  pencilTexture = loadImage('https://raw.githubusercontent.com/peatf/audio-reactive-blob/refs/heads/main/%20A%20seamless%2C%20grainy%20pencil%20texture%201.png');
+  pencilTexture = loadImage('A seamless, grainy pencil texture 1.png');
 }
 
 function setup() {
