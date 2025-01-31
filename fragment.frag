@@ -47,8 +47,9 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-       vec2 uv = vTexCoord * 2.0 - 1.0;
-    uv.x *= u_resolution.x / u_resolution.y;  
+      vec2 uv = vTexCoord * 2.0 - 1.0;
+    uv *= 1.25;  // Compensate for your 0.8 scale in script.js
+    uv.x *= u_resolution.x / u_resolution.y;  // Aspect ratio correction
 
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0, 0.0, 0.0);  // Changed to vec3
