@@ -6,6 +6,8 @@ uniform float u_audioLevel;
 uniform float u_bassLevel;
 uniform float u_trebleLevel;
 uniform vec2 u_resolution;
+uniform sampler2D u_texture;
+
 
 float noise(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -58,5 +60,7 @@ void main() {
     finalColor += vec3(specular);
     finalColor += vec3(grain);
 
-    gl_FragColor = vec4(finalColor, blob);
+vec4 textureColor = texture2D(u_texture, vTexCoord * 2.0);
+finalColor = mix(finalColor, textureColor.rgb, 0.4); // 40% texture strength
+gl_FragColor = vec4(finalColor, blob);
 }
