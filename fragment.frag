@@ -47,26 +47,12 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-    // PROPER UV CALCULATION
-    vec2 uv = vTexCoord; // Already in [-1, 1] range
- uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio fix
-
-    // DEBUG: Force full-screen test (temporary)
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-}
+    vec2 uv = (vTexCoord * 2.0 - 1.0) * vec2(u_resolution.x/u_resolution.y, 1.0);
 
     // RESTORE ORB LOGIC
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0);
     float blob = jellyBlob(uv, 0.4, 0.1);
-    
-    // DEBUG GRID (visible only if UVs are correct)
-    vec3 grid = vec3(0.0);
-    grid.r = step(0.99, abs(uv.x)); // Red vertical borders
-    grid.g = step(0.99, abs(uv.y)); // Green horizontal borders
-    
-    vec3 finalColor = mix(bgColor, jellyColor, blob);
-    finalColor += grid; // Overlay debug lines
-
-    gl_FragColor = vec4(finalColor, blob);
+       // SIMPLE OUTPUT (TEMPORARY)
+    gl_FragColor = vec4(mix(bgColor, jellyColor, blob), blob);
 }
