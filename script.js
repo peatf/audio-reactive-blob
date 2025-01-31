@@ -45,7 +45,6 @@ function draw() {
     if (!theShader) return;
 
  clear(0, 0, 0, 0);
-    
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
 
