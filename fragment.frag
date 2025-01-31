@@ -47,10 +47,23 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-   float cross = smoothstep(0.01, 0.0, length(uv)) + 
-                 smoothstep(0.01, 0.0, abs(uv.x)) + 
-                 smoothstep(0.01, 0.0, abs(uv.y));
-    finalColor = mix(finalColor, vec3(1,0,0), cross);
+    // 1. DECLARE uv FIRST
+    vec2 uv = vTexCoord * 2.0 - 1.0;
+    uv.x *= u_resolution.x / u_resolution.y;
+
+    // 2. PROPERLY DECLARE ALL VARIABLES
+    vec3 jellyColor = vec3(0.1, 0.8, 0.3);
+    vec3 bgColor = vec3(0.0);
+    float blob = jellyBlob(uv, 0.4, 0.1);
     
+    // 3. MOVE DEBUG CODE AFTER DECLARATIONS
+    vec3 finalColor = mix(bgColor, jellyColor, blob);
+    
+    // TEMPORARY DEBUG (uncomment when needed)
+    // float cross = smoothstep(0.01, 0.0, length(uv)) + 
+    //              smoothstep(0.01, 0.0, abs(uv.x)) + 
+    //              smoothstep(0.01, 0.0, abs(uv.y));
+    // finalColor = mix(finalColor, vec3(1,0,0), cross);
+
     gl_FragColor = vec4(finalColor, blob);
 }
