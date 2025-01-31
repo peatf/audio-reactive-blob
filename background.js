@@ -160,7 +160,7 @@ window.addEventListener('resize', () => {
     uniforms.resolution.value.set(width, height);
 });
 // Add after your existing Three.js setup
-const overlayTexture = new THREE.TextureLoader().load('path/to/pencil-texture.png');
+const overlayTexture = new THREE.TextureLoader().load('A seamless, grainy pencil texture 1.png');
 const overlayMaterial = new THREE.ShaderMaterial({
   uniforms: {
     texture1: { value: overlayTexture },
