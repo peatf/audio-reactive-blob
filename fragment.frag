@@ -47,22 +47,26 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-    // 1. Correct UV mapping with aspect ratio
-    vec2 uv = vTexCoord * 2.0 - 1.0; // Convert to [-1, 1]
-    uv.x *= u_resolution.x / u_resolution.y; // Fix aspect ratio distortion
+    // PROPER UV CALCULATION
+    vec2 uv = vTexCoord * 2.0 - 1.0; // Full-screen [-1,1] range
+    uv.x *= u_resolution.x / u_resolution.y; // Aspect ratio fix
 
-    // 2. Debug: Visualize full UV range (temporary)
-    vec3 debugGrid = vec3(0.2);
-    debugGrid.r += mod(uv.x, 0.5) < 0.01 ? 1.0 : 0.0; // Vertical lines
-    debugGrid.g += mod(uv.y, 0.5) < 0.01 ? 1.0 : 0.0; // Horizontal lines
+    // DEBUG: Force full-screen test (temporary)
+  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Should fill entire screen red
+ return;
 
-    // 3. Restore original orb logic
+    // RESTORE ORB LOGIC
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0);
     float blob = jellyBlob(uv, 0.4, 0.1);
     
+    // DEBUG GRID (visible only if UVs are correct)
+    vec3 grid = vec3(0.0);
+    grid.r = step(0.99, abs(uv.x)); // Red vertical borders
+    grid.g = step(0.99, abs(uv.y)); // Green horizontal borders
+    
     vec3 finalColor = mix(bgColor, jellyColor, blob);
-    finalColor = mix(finalColor, debugGrid, 0.3); // Show grid
+    finalColor += grid; // Overlay debug lines
 
     gl_FragColor = vec4(finalColor, blob);
 }
