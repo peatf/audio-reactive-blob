@@ -60,7 +60,7 @@ void main() {
     finalColor += vec3(specular);
     finalColor += vec3(grain);
 
-vec4 textureColor = texture2D(u_texture, vTexCoord * 2);
-finalColor = mix(finalColor, textureColor.rgb, 0.2); // 40% texture strength
+vec4 textureColor = texture2D(u_texture, vTexCoord * 1.5);
+finalColor = mix(finalColor, textureColor.rgb, 0.4); // 40% texture strength
 gl_FragColor = vec4(finalColor, blob);
 }
