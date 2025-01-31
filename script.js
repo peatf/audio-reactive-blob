@@ -11,12 +11,8 @@ let captionElement;
 
 function preload() {
     // Load shaders
-    const vert = loadStrings('vertex.vert');
-    const frag = loadStrings('fragment.frag');
-
-    // Process shaders after loading
-    vert.then(data => window.vertexShaderSource = data.join('\n'));
-    frag.then(data => window.fragmentShaderSource = data.join('\n'));
+    vertexShaderSource = loadStrings('vertex.vert');
+    fragmentShaderSource = loadStrings('fragment.frag');
 
     // Load audio
     audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3', 
@@ -35,12 +31,9 @@ function setup() {
     captionElement = document.getElementById("caption");
 
     // Ensure shaders are loaded before creating the shader
-    if (window.vertexShaderSource && window.fragmentShaderSource) {
-        theShader = createShader(window.vertexShaderSource, window.fragmentShaderSource);
-    } else {
-        console.error("Shaders not loaded!");
-        return;
-    }
+    Promise.all([vertexShaderSource, fragmentShaderSource]).then(sources => {
+        theShader = createShader(sources[0].join('\n'), sources[1].join('\n'));
+    }).catch(() => console.error("Shaders failed to load."));
 
     shaderCanvas = createGraphics(width, height, WEBGL);
     shaderCanvas.noStroke();
@@ -51,7 +44,13 @@ function setup() {
 
 function draw() {
     if (!theShader) {
-        console.error("Shader failed to load.");
+        console.error("Shader not loaded.");
+        return;
+    }
+
+    // Ensure audio is loaded before processing
+    if (!audio || !audio.isLoaded()) {
+        console.error("Audio not loaded.");
         return;
     }
 
@@ -78,13 +77,13 @@ function draw() {
 
 function mousePressed() {
     if (!audio.isLoaded()) {
-        console.error("Audio not loaded yet. Please wait.");
+        console.error("Audio not ready.");
         return;
     }
     if (audio.isPlaying()) {
         audio.pause();
     } else {
-        audio.play();
+        audio.loop();
     }
 }
 
