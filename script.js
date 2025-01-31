@@ -50,6 +50,14 @@ function setup() {
     });
 }
 
+function windowResized() {
+    let container = document.getElementById('p5-container');
+    resizeCanvas(container.clientWidth, container.clientHeight);
+    if (theShader) {
+        theShader.setUniform("u_resolution", [width, height]);
+    }
+}
+
 
 function draw() {
     if (!theShader) return;
