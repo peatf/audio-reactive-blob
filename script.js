@@ -18,7 +18,7 @@ function preload() {
     });
 
     // Load audio
-    audio = loadSound('rtkgreenwelcome.mp3', 
+audio = loadSound('https://docs.google.com/uc?export=download&id=1BRtBPNh2VBkEuN_Cp_cxmBgwAU3a_YBb');
         () => console.log("Audio loaded successfully"), 
         () => console.error("Failed to load audio. Make sure 'rtkgreenwelcome.mp3' exists.")
     );
