@@ -47,6 +47,8 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
- void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // Full red screen test
+ float border = smoothstep(0.95, 1.0, abs(uv.x)) + smoothstep(0.95, 1.0, abs(uv.y));
+    finalColor = mix(finalColor, vec3(1.0,0.0,0.0), border);
+    
+    gl_FragColor = vec4(finalColor, blob);
 }
