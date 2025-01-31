@@ -61,7 +61,7 @@ void main() {
     uv.x *= u_resolution.x / u_resolution.y;
 
     vec3 jellyColor = vec3(0.1, 0.8, 0.3); // Vibrant green
-    vec3 bgColor = vec3(0.02, 0.02, 0.03); // Dark background
+vec4 bgColor = vec4(0.02, 0.02, 0.03, 0.0); // Transparent background
 
     float blob = jellyBlob(uv, 0.4, 0.1);
 
@@ -75,5 +75,5 @@ void main() {
     finalColor += specular;
     finalColor += grain;
 
-    gl_FragColor = vec4(finalColor, 1.0);
+    gl_FragColor = vec4(finalColor, blob);
 }
