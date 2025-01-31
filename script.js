@@ -8,37 +8,59 @@ let currentCaption = "";
 let captionElement;
 
 function preload() {
-    vertexShaderSource = loadStrings('vertex.vert');
-    fragmentShaderSource = loadStrings('fragment.frag');
-    audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
-    loadCaptions('rtkgreenwelcome.vtt');
+    // Add error handling and logging
+    try {
+        vertexShaderSource = loadStrings('vertex.vert', 
+            () => console.log('Vertex shader loaded'),
+            (err) => console.error('Vertex shader error:', err)
+        );
+        fragmentShaderSource = loadStrings('fragment.frag',
+            () => console.log('Fragment shader loaded'),
+            (err) => console.error('Fragment shader error:', err)
+        );
+        audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
+    } catch(e) {
+        console.error('Error in preload:', e);
+    }
 }
 
 function setup() {
-    // Create canvas inside p5-container
+    console.log('Setup started');
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
     noStroke();
-   setAttributes({
-        alpha: true,
-        premultipliedAlpha: false
-    });
-    clear(0, 0, 0, 0);
 
+    setAttributes({
+        alpha: true
+    });
+    
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
 
     captionElement = document.getElementById("caption");
 
-    Promise.all([vertexShaderSource, fragmentShaderSource]).then(([vertData, fragData]) => {
-        theShader = createShader(vertData.join('\n'), fragData.join('\n'));
-    }).catch(() => {
-        console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
-    });
+    // Modified shader creation with error checking
+    if (vertexShaderSource && fragmentShaderSource) {
+        console.log('Creating shader');
+        try {
+            theShader = createShader(
+                vertexShaderSource.join('\n'),
+                fragmentShaderSource.join('\n')
+            );
+            console.log('Shader created successfully');
+        } catch(e) {
+            console.error('Error creating shader:', e);
+        }
+    } else {
+        console.error('Shader sources not loaded');
+    }
 }
 
 function draw() {
-    if (!theShader) return;
+    if (!theShader) {
+        console.log('Shader not ready');
+        return;
+    }
 
     clear(0, 0, 0, 0);
 
@@ -55,12 +77,16 @@ function draw() {
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
-// ✅ Move the orb down slightly to center under text
-    translate(0, 50); // Move down (increase or decrease 50px as needed)
 
-let size = min(width, height) * 0.4; // Adjust 0.4 to change size
+    translate(0, 50);
+    
+    let size = min(width, height) * 0.4;
     rect(-size/2, -size/2, size, size);
-}
+ if (textureImg) {
+        blendMode(MULTIPLY); // Change this mode if needed
+        image(textureImg, -width / 2, -height / 2, width, height);
+        blendMode(BLEND); // Reset blending mode
+    }
     updateCaptions();
 }
 
