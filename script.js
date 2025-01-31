@@ -59,12 +59,28 @@ function mousePressed() {
     }
 }
 
-function loadCaptions(file) {
-    fetch(file)
-        .then(response => response.text())
-        .then(text => parseCaptions(text))
-        .catch(() => console.error("Captions file not found: " + file));
+function updateCaptions() {
+    if (!audio.isPlaying()) {
+        captionElement.innerHTML = "Click to play.";
+        return;
+    }
+
+    let currentTime = audio.currentTime();
+
+    for (let i = 0; i < captions.length; i++) {
+        if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
+            if (currentCaption !== captions[i].text) {
+                currentCaption = captions[i].text;
+                captionElement.innerHTML = currentCaption;
+            }
+            return;
+        }
+    }
+
+    // If no matching caption, clear it
+    captionElement.innerHTML = "";
 }
+
 
 function parseCaptions(data) {
     let lines = data.split("\n");
