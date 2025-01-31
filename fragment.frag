@@ -1,4 +1,4 @@
-=precision mediump float;
+precision mediump float;
 
 // --- Declare uniforms first ---
 varying vec2 vTexCoord;
