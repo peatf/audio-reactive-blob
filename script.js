@@ -48,6 +48,8 @@ function draw() {
     theShader.setUniform("u_audioLevel", audioLevel);
     theShader.setUniform("u_bassLevel", bassLevel);
     theShader.setUniform("u_trebleLevel", trebleLevel);
+// ✅ Move the orb down slightly to center under text
+    translate(0, 50); // Move down (increase or decrease 50px as needed)
 
     rect(-width / 2, -height / 2, width, height);
 
