@@ -50,7 +50,7 @@ void main() {
 
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0);
-    float blob = jellyBlob(uv, 0.4, 0.1);
+    float blob = jellyBlob(uv, 0.3, 0.1);
     float lightScatter = softLight(uv * 1.5, 2.0) * 0.5;
     float specular = integratedShine(uv, blob, (1.0 + u_trebleLevel * 1.5));
     float grain = smoothstep(0.2, 0.5, blob) * noise(uv * 40.0 + u_time) * 0.2;
