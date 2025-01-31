@@ -58,12 +58,15 @@ function draw() {
 
 function mousePressed() {
     if (!audio) return;
+
     if (audio.isPlaying()) {
         audio.pause();
     } else {
         audio.play();
+        setTimeout(updateCaptions, 100); // ✅ Ensures captions resume correctly
     }
 }
+
 
 function loadCaptions(file) {
     fetch(file)
@@ -117,20 +120,32 @@ function updateCaptions() {
     }
 
     let currentTime = audio.currentTime();
-    console.log("Audio Time:", currentTime); // ✅ Debugging check
+    console.log("Audio Time:", currentTime); // ✅ Debugging log
+
+    let foundCaption = false; // ✅ Track if a caption was found
 
     for (let i = 0; i < captions.length; i++) {
-        console.log("Checking Caption:", captions[i]); // ✅ Debugging check
+        console.log("Checking Caption:", captions[i]); // ✅ Debugging log
 
         if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
             if (currentCaption !== captions[i].text) {
-                console.log("Showing Caption:", captions[i].text); // ✅ Debugging check
+                console.log("Showing Caption:", captions[i].text); // ✅ Debugging log
                 currentCaption = captions[i].text;
                 captionElement.innerHTML = currentCaption;
             }
-            return;
+            foundCaption = true;
+            break;
         }
     }
+
+    // ✅ If no caption is found, don't overwrite previous text
+    if (!foundCaption) {
+        captionElement.innerHTML = "";
+    }
+
+    // ✅ Ensure updateCaptions() keeps running after resume
+    requestAnimationFrame(updateCaptions);
+}
 
     captionElement.innerHTML = "";
 }
