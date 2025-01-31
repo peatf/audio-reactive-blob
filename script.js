@@ -19,7 +19,10 @@ function setup() {
     let canvas = createCanvas(windowWidth, windowHeight, WEBGL);
     canvas.parent('p5-container');
     noStroke();
-
+   setAttributes({
+        alpha: true,
+        premultipliedAlpha: false
+    });
     clear(0, 0, 0, 0);
 
     amplitude = new p5.Amplitude();
@@ -55,7 +58,8 @@ function draw() {
 // ✅ Move the orb down slightly to center under text
     translate(0, 50); // Move down (increase or decrease 50px as needed)
 
-rect(-width/4, -height/4, width/2, height/2);
+let size = min(width, height) * 0.4; // Adjust 0.4 to change size
+    rect(-size/2, -size/2, size, size);
     updateCaptions();
 }
 
