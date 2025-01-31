@@ -22,11 +22,11 @@ float fbm(vec2 p) {
     return total;
 }
 
+// ---- ORB FUNCTION ----
 float jellyBlob(vec2 uv, float baseRadius, float wobble) {
     float dist = length(uv);
     float audioWobble = (u_audioLevel * 0.4) + (u_bassLevel * 0.3) + (u_trebleLevel * 0.2);
     float distortion = fbm(uv * 3.0 + u_time * 0.8) * (wobble + audioWobble);
-    
     return smoothstep(baseRadius + distortion, baseRadius - 0.02, dist);
 }
 
