@@ -47,9 +47,8 @@ float integratedShine(vec2 uv, float blobMask, float intensity) {
 }
 
 void main() {
-      vec2 uv = vTexCoord * 2.0 - 1.0;
-    uv *= 1.25;  // Compensate for your 0.8 scale in script.js
-    uv.x *= u_resolution.x / u_resolution.y;  // Aspect ratio correction
+    vec2 uv = vTexCoord * 2.0 - 1.0;
+    uv.x *= u_resolution.x / u_resolution.y;  // Aspect ratio compens
 
     vec3 jellyColor = vec3(0.1, 0.8, 0.3);
     vec3 bgColor = vec3(0.0, 0.0, 0.0);  // Changed to vec3
@@ -59,16 +58,16 @@ void main() {
     float specular = integratedShine(uv, blob, (1.0 + u_trebleLevel * 1.5));
     float grain = smoothstep(0.2, 0.5, blob) * noise(uv * 40.0 + u_time) * 0.2;
 
+// Debug grid (add before final color mix)
+    vec3 grid = vec3(0.2);
+    grid.r += mod(uv.x, 0.25) < 0.01 ? 0.5 : 0.0;
+    grid.g += mod(uv.y, 0.25) < 0.01 ? 0.5 : 0.0;
     // Fixed mix function - both arguments must be vec3
     vec3 finalColor = mix(bgColor, jellyColor, blob);
     finalColor += vec3(lightScatter);
     finalColor += vec3(specular);
     finalColor += vec3(grain);
 
-    // Debug grid - ADD THIS RIGHT BEFORE gl_FragColor
-    vec3 grid = vec3(0.2);
-    grid.r += mod(uv.x, 0.25) < 0.01 ? 0.5 : 0.0;  // Vertical lines
-    grid.g += mod(uv.y, 0.25) < 0.01 ? 0.5 : 0.0;  // Horizontal lines
     finalColor = mix(finalColor, grid, 0.3);       // 30% transparency overlay
 
     gl_FragColor = vec4(finalColor, blob);
