@@ -1,24 +1,17 @@
-let vertexShaderSource, fragmentShaderSource;
 let theShader;
-let shaderCanvas;
 let audio, fft, amplitude;
 let audioLevel = 0;
-let bassLevel = 0;
-let trebleLevel = 0;
 let captions = [];
 let currentCaption = "";
 let captionElement;
 
 function preload() {
-    // Load shaders
+    // Load shaders as strings
     vertexShaderSource = loadStrings('vertex.vert');
     fragmentShaderSource = loadStrings('fragment.frag');
 
     // Load audio
-    audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3', 
-        () => console.log("Audio loaded successfully"), 
-        () => console.error("Failed to load audio. Check the file path.")
-    );
+    audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
 
     // Load captions
     loadCaptions('rtkgreenwelcome.vtt');
@@ -28,71 +21,72 @@ function setup() {
     createCanvas(600, 600, WEBGL);
     noStroke();
 
-    captionElement = document.getElementById("caption");
-
-    // Ensure shaders are loaded before creating the shader
-    Promise.all([vertexShaderSource, fragmentShaderSource]).then(sources => {
-        theShader = createShader(sources[0].join('\n'), sources[1].join('\n'));
-    }).catch(() => console.error("Shaders failed to load."));
-
-    shaderCanvas = createGraphics(width, height, WEBGL);
-    shaderCanvas.noStroke();
-
     amplitude = new p5.Amplitude();
     fft = new p5.FFT();
+
+    captionElement = document.getElementById("caption");
+
+    // Wait for shaders before applying them
+    Promise.all([vertexShaderSource, fragmentShaderSource]).then(([vertData, fragData]) => {
+        theShader = createShader(vertData.join('\n'), fragData.join('\n'));
+    }).catch(() => {
+        console.error("Shaders failed to load. Check 'vertex.vert' and 'fragment.frag'.");
+    });
 }
 
 function draw() {
-    if (!theShader) {
-        console.error("Shader not loaded.");
-        return;
-    }
+    if (!theShader) return;
 
-    // Ensure audio is loaded before processing
-    if (!audio || !audio.isLoaded()) {
-        console.error("Audio not loaded.");
-        return;
-    }
-
-    // Get audio levels
     let level = amplitude.getLevel();
     audioLevel = lerp(audioLevel, level, 0.2);
-
     let spectrum = fft.analyze();
-    bassLevel = lerp(bassLevel, fft.getEnergy("bass") / 255, 0.2);
-    trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
+bassLevel = lerp(bassLevel, fft.getEnergy("bass") / 255, 0.2);
+trebleLevel = lerp(trebleLevel, fft.getEnergy("treble") / 255, 0.2);
 
-    // Apply shader
+
     shader(theShader);
     theShader.setUniform("u_time", millis() / 1000.0);
-    theShader.setUniform("u_resolution", [width, height]);
-    theShader.setUniform("u_audioLevel", audioLevel);
-    theShader.setUniform("u_bassLevel", bassLevel);
-    theShader.setUniform("u_trebleLevel", trebleLevel);
+theShader.setUniform("u_resolution", [width, height]);
+theShader.setUniform("u_audioLevel", audioLevel);
+theShader.setUniform("u_bassLevel", bassLevel);
+theShader.setUniform("u_trebleLevel", trebleLevel);
 
-    rect(0, 0, width, height);
+    rect(-width / 2, -height / 2, width, height);
 
     updateCaptions();
 }
 
 function mousePressed() {
-    if (!audio.isLoaded()) {
-        console.error("Audio not ready.");
-        return;
-    }
+    if (!audio) return;
     if (audio.isPlaying()) {
         audio.pause();
     } else {
-        audio.loop();
+        audio.play();
     }
 }
 
-function loadCaptions(file) {
-    fetch(file)
-        .then(response => response.text())
-        .then(text => parseCaptions(text))
-        .catch(() => console.error("Captions file not found: " + file));
+function updateCaptions() {
+    if (!audio.isPlaying()) {
+        captionElement.innerHTML = "Click to play.";
+        return;
+    }
+
+    let currentTime = audio.currentTime();
+
+    for (let i = 0; i < captions.length; i++) {
+        if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
+            if (currentCaption !== captions[i].text) {
+                currentCaption = captions[i].text;
+                captionElement.innerHTML = currentCaption;
+            }
+            return;
+        }
+    }
+
+    // If no matching caption, clear it
+    captionElement.innerHTML = "";
 }
+
 
 function parseCaptions(data) {
     let lines = data.split("\n");
@@ -123,9 +117,13 @@ function timeToSeconds(time) {
 }
 
 function updateCaptions() {
-    if (!audio.isPlaying()) return;
+    if (!audio.isPlaying()) {
+        captionElement.innerHTML = "Click to play.";
+        return;
+    }
 
     let currentTime = audio.currentTime();
+
     for (let i = 0; i < captions.length; i++) {
         if (currentTime >= captions[i].start && currentTime <= captions[i].end) {
             if (currentCaption !== captions[i].text) {
@@ -136,5 +134,6 @@ function updateCaptions() {
         }
     }
 
+    // If no matching caption, clear it
     captionElement.innerHTML = "";
 }
