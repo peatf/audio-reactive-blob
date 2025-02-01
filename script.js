@@ -86,12 +86,7 @@ rect(0, 0, width, height);
 }
 
 function mousePressed() {
-    startAudio();
-}
-
-function touchStarted() {
-    startAudio();
-}
+    if (!audio) return;
 
     if (audio.isPlaying()) {
         audio.pause();
