@@ -13,18 +13,9 @@ let pencilTexture;
 function preload() {
      vertexShaderSource = loadStrings('vertex.vert');
     fragmentShaderSource = loadStrings('fragment.frag');
+    audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3');
     pencilTexture = loadImage('seamless-grainy-pencil-texture-1.png');
     loadCaptions('rtkgreenwelcome.vtt');
-}
-
-function startAudio() {
-    if (!audio) {
-        audio = loadSound('https://peatf.github.io/rtkgreenwelcome/rtkgreenwelcome.mp3', () => {
-            audio.play();
-        });
-    } else {
-        audio.play();
-    }
 }
 
 function setup() {
@@ -95,14 +86,8 @@ rect(0, 0, width, height);
 }
 
 function mousePressed() {
-    console.log("mousePressed triggered");
-    startAudio();
-}
+    if (!audio) return;
 
-function touchStarted() {
-    console.log("touchStarted triggered");
-    startAudio();
-}
     if (audio.isPlaying()) {
         audio.pause();
     } else {
