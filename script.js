@@ -85,7 +85,7 @@ rect(0, 0, width, height);
     updateCaptions();
 }
 
-function mousePressed() {
+function mouseReleased() {
   // If you need to ensure audio is initialized, do:
   if (!audio) return;
   
@@ -97,9 +97,9 @@ function mousePressed() {
   }
 }
 
-function touchStarted() {
-  // On mobile, p5 calls this first, so replicate or forward to mousePressed
-  mousePressed();
+function touchEnded() {
+  // On mobile, p5 calls this first, so replicate or forward to mouseReleased
+  mouseReleased();
 }
 
 function loadCaptions(file) {
