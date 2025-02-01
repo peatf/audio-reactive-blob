@@ -85,21 +85,32 @@ rect(0, 0, width, height);
     updateCaptions();
 }
 
-function mouseReleased() {
-  // If you need to ensure audio is initialized, do:
+function toggleAudio() {
   if (!audio) return;
-  
-  if (audio.isPlaying()) {
-    audio.pause();
-  } else {
-    audio.play();
-    updateCaptions();
-  }
+  getAudioContext().resume().then(() => {
+    if (audio.isPlaying()) {
+      audio.pause();
+    } else {
+      audio.play();
+      // e.g. updateCaptions();
+    }
+  });
+}
+
+// 2) The guard variable
+let lastTouchTime = 0;
+
+// 3) Mouse and touch events
+function mouseReleased() {
+  // If a touch ended recently, skip
+  if (millis() - lastTouchTime < 100) return;
+  toggleAudio();
 }
 
 function touchEnded() {
-  // On mobile, p5 calls this first, so replicate or forward to mouseReleased
-  mouseReleased();
+  lastTouchTime = millis();
+  toggleAudio();
+  return false; // helps prevent extra default behavior
 }
 
 function loadCaptions(file) {
