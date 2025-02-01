@@ -95,8 +95,12 @@ rect(0, 0, width, height);
 }
 
 function mousePressed() {
-    if (!audio) return;
+    console.log("mousePressed triggered");
+    startAudio();
+}
+
 function touchStarted() {
+    console.log("touchStarted triggered");
     startAudio();
 }
     if (audio.isPlaying()) {
